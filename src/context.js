@@ -30,7 +30,7 @@ const AppProvider = ({ children }) => {
     try {
       const response = await fetch(url)
       const data = await response.json()
-      console.log(data)
+      // console.log(data)
       dispatch({type:SET_STORIES,payload:{hits:data.hits, nbPages:data.nbPages}})
     } catch (error) {
       console.log(error)
@@ -39,8 +39,21 @@ const AppProvider = ({ children }) => {
   //useEffect
   useEffect(()=>{
     fetchStories(`${API_ENDPOINT}query=${state.query}&page=${state.page}`)
-  },[])
-  return <AppContext.Provider value={{...state}}>{children}</AppContext.Provider>
+  },[state.query, state.page])
+  //removeStory
+  const removeStory = (id)=>{
+    dispatch({type:REMOVE_STORY, payload:{id}})
+  }
+  //handleSearch
+  const handleSearch = (query)=>{
+    dispatch({type:HANDLE_SEARCH, payload:{query}})
+  }
+  //handlePage
+  const handlePage = (value)=>{
+    // console.log(value)
+    dispatch({type:HANDLE_PAGE, payload:value})
+  }
+  return <AppContext.Provider value={{...state, removeStory, handleSearch, handlePage}}>{children}</AppContext.Provider>
 }
 // make sure use
 export const useGlobalContext = () => {
